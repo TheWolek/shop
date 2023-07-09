@@ -6,7 +6,6 @@ import {
   productOnListingPage,
 } from "../../types/catalog";
 import { MysqlError } from "mysql";
-import { Resolver } from "dns";
 
 class catalogModel {
   fetchActiveCategories(result: Function) {
