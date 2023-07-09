@@ -7,6 +7,7 @@ class helloController {
 
   constructor() {
     this.initRoutes();
+    console.log(`Controller ${this.path} initialized`);
   }
 
   public initRoutes() {
