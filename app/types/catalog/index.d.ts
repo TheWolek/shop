@@ -37,4 +37,11 @@ export interface listingPage {
   pageSize: number;
   sortBy: string;
   sort: string;
+  filters: listingFilter[];
+}
+
+export interface listingFilter {
+  filter_id: number;
+  filter_name: string;
+  filter_type: "checkbox" | "range";
 }
