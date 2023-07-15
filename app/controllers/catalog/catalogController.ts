@@ -1,7 +1,12 @@
 import express, { Request, Response } from "express";
 import catalogModel from "../../models/catalog/catalogModel";
 
-import { groupRow, listingPage } from "../../types/catalog";
+import {
+  fetchProductsByCategoryParams,
+  filterOnListingPage,
+  groupRow,
+  listingPage,
+} from "../../types/catalog";
 import { reg_number } from "../../helpers/regEx";
 import throwGenericError from "../../helpers/throwGenericError";
 import { MysqlError } from "mysql";
@@ -51,7 +56,8 @@ class catalogController {
     req: Request<
       { category_id: string },
       {},
-      { page: string; sortBy: string; sort: string }
+      {},
+      fetchProductsByCategoryParams
     >,
     res: Response
   ) => {
@@ -62,6 +68,7 @@ class catalogController {
     let page = 1;
     let sortBy = "product_id";
     let sort = "desc";
+    let filters: filterOnListingPage | undefined = req.query.filters;
     const pageSize = 5;
 
     if (req.query.page !== undefined) {
@@ -88,6 +95,7 @@ class catalogController {
       pageSize,
       sortBy,
       sort,
+      filters,
       (err: MysqlError, rows: Array<listingPage>) => {
         if (err) {
           return throwGenericError(res, 500, "Błąd serwera SQL", err);

@@ -1,5 +1,6 @@
 import db from "../db";
 import {
+  filterOnListingPage,
   group,
   groupRow,
   listingFilter,
@@ -117,6 +118,7 @@ class catalogModel {
     pageSize: number = 5,
     sortBy: string = "product_id",
     sort: string = "desc",
+    filters: filterOnListingPage | undefined,
     result: Function
   ) {
     this.fetchDefaultFilters()
@@ -128,13 +130,48 @@ class catalogModel {
                 const offset = (page - 1) * pageSize;
                 const totalPages = Math.ceil(Number(numberOfPages) / pageSize);
 
-                const sql_productsInPage = `SELECT p.product_id, p.product_name, p.product_price, p2.producer_name, p.is_available, p.image, cc.category_id, cc.category_name
+                let filter_condition = " and ";
+
+                if (filters !== undefined) {
+                  if (filters.producer_id !== undefined) {
+                    filter_condition += ` p2.producer_id in (${filters.producer_id})`;
+                  }
+
+                  if (filters.priceRange !== undefined) {
+                    if (filters.producer_id !== undefined)
+                      filter_condition += " and ";
+                    if (filters.priceRange.minValue !== undefined) {
+                      filter_condition += ` p.product_price > ${filters.priceRange.minValue}`;
+                    }
+                    if (filters.priceRange.maxValue !== undefined) {
+                      if (filters.priceRange.minValue !== undefined)
+                        filter_condition += " and ";
+                      filter_condition += ` p.product_price < ${filters.priceRange.maxValue}`;
+                    }
+                  }
+
+                  if (filters.is_available !== undefined) {
+                    if (
+                      filters.producer_id !== undefined ||
+                      filters.priceRange !== undefined
+                    )
+                      filter_condition += " and ";
+
+                    filter_condition += ` p.is_available = (${filters.is_available})`;
+                  }
+                }
+
+                const sql_productsInPage = `SELECT p.product_id, p.product_name, p.product_price, p2.producer_id, p2.producer_name, p.is_available, p.image, cc.category_id, cc.category_name
           FROM products p 
           JOIN catalog_categories cc ON p.product_category_id = cc.category_id 
           JOIN producers p2 ON p.producer = p2.producer_id
-          WHERE cc.category_id = ${db.escape(category_id)}
+          WHERE cc.category_id = ${db.escape(category_id)} ${
+                  filters !== undefined ? filter_condition : ""
+                }
           ORDER BY p.${sortBy} ${sort}
           LIMIT ${db.escape(offset)}, ${db.escape(pageSize)}`;
+
+                console.log(sql_productsInPage);
 
                 db.query(
                   sql_productsInPage,

@@ -45,3 +45,21 @@ export interface listingFilter {
   filter_name: string;
   filter_type: "checkbox" | "range";
 }
+
+export interface filterOnListingPage {
+  producer_id: number[] | undefined;
+  priceRange:
+    | {
+        minValue: number | undefined;
+        maxValue: number | undefined;
+      }
+    | undefined;
+  is_available: boolean | undefined;
+}
+
+export interface fetchProductsByCategoryParams {
+  page: undefined | string;
+  sortBy: undefined | string;
+  sort: undefined | string;
+  filters: filterOnListingPage | undefined;
+}

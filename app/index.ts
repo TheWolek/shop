@@ -15,6 +15,7 @@ class App {
 
   private initMiddlewares() {
     this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: true }));
   }
 
   private initControllers(controllers: any) {
