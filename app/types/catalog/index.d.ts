@@ -38,6 +38,7 @@ export interface listingPage {
   sortBy: string;
   sort: string;
   filters: listingFilter[];
+  producers: producersByCategory[];
 }
 
 export interface listingFilter {
@@ -62,4 +63,10 @@ export interface fetchProductsByCategoryParams {
   sortBy: undefined | string;
   sort: undefined | string;
   filters: filterOnListingPage | undefined;
+}
+
+export interface producersByCategory {
+  producer_id: number;
+  producer_name: string;
+  product_count: number;
 }
