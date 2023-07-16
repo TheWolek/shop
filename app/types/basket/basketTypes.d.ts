@@ -4,6 +4,7 @@ export interface basket {
   selectedShipmentMethod: null | selectedShipmentMethod;
   selectedPaymentMethod: null | selectedPaymentMethod;
   comment: string;
+  totalPrice: number;
 }
 
 export interface productInBasket {
@@ -19,6 +20,11 @@ export interface productInBasket {
 }
 
 export interface product {
+  product_id: number;
+  count: number;
+}
+
+export interface existingProductFromDB {
   product_id: number;
   product_name: string;
   product_price: number;
